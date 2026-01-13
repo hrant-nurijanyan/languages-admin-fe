@@ -1,0 +1,39 @@
+'use client';
+
+import { useAuth } from '../components/providers/AuthProvider';
+import { API_BASE_URL } from '../lib/config';
+
+export function useApiClient() {
+  const { token } = useAuth();
+
+  const request = async <T>(
+    path: string,
+    options: RequestInit = {},
+  ): Promise<T> => {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...(options ?? {}),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers ?? {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
+    let payload: unknown = null;
+    const isJson = response.headers.get('content-type')?.includes('application/json');
+    if (response.status !== 204 && isJson) {
+      payload = await response.json().catch(() => null);
+    }
+
+    if (!response.ok) {
+      const message =
+        typeof payload === 'object' && payload && 'message' in payload
+          ? (payload as { message: string }).message
+          : 'Request failed';
+      throw new Error(message);
+    }
+    return payload as T;
+  };
+
+  return { request };
+}
