@@ -56,6 +56,39 @@ export interface GeneratedLessonTimings {
   transcriptText: string;
 }
 
+export type TimingTranscriptionProvider = 'openai-whisper' | 'dashscope-qwen-filetrans';
+
+export interface TimingBenchmarkProviderSummary {
+  transcriptPreview: string;
+  transcriptWordCount: number;
+  audioDurationSeconds?: number;
+  wordTimingCount: number;
+  sentenceTimingCount: number;
+  segmentCount: number;
+  warningCount: number;
+  estimatedWordCount: number;
+  warnings: string[];
+  firstWordTiming: { text: string; startMs: number; endMs: number } | null;
+  lastWordTiming: { text: string; startMs: number; endMs: number } | null;
+}
+
+export interface TimingBenchmarkProviderResult {
+  provider: TimingTranscriptionProvider;
+  ok: boolean;
+  error?: string;
+  summary?: TimingBenchmarkProviderSummary;
+}
+
+export interface LessonTimingBenchmarkResponse {
+  temp: true;
+  lessonId: string;
+  itemId: string;
+  itemAudioUrl: string;
+  lessonText: string;
+  results: TimingBenchmarkProviderResult[];
+  deleteReminder: string;
+}
+
 export interface UploadedAudioFile {
   audioUrl: string;
   fileName: string;

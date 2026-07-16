@@ -6,6 +6,7 @@ import {
   LessonItem,
   LessonStatus,
   LessonSummary,
+  LessonTimingBenchmarkResponse,
   UploadedAudioFile,
 } from '../lib/apiTypes';
 import { useApiClient } from './useApiClient';
@@ -42,6 +43,7 @@ type DeleteLessonInput = { lessonId: string };
 type UploadLessonAudioInput = { file: File; lessonItemId?: string };
 type DeleteLessonAudioInput = { lessonItemId?: string; audioUrl: string };
 type GenerateLessonItemTimingsInput = { lessonId: string; itemId: string; text: string };
+type BenchmarkLessonItemTimingsTempInput = { lessonId: string; itemId: string; text: string };
 type UpdateLessonSegmentTimingsInput = {
   lessonId: string;
   itemId: string;
@@ -154,6 +156,17 @@ export const useLessonMutations = () => {
       ),
   });
 
+  const benchmarkLessonItemTimingsTemp = useMutation({
+    mutationFn: ({ lessonId, itemId, text }: BenchmarkLessonItemTimingsTempInput) =>
+      request<LessonTimingBenchmarkResponse>(
+        `/lessons/${lessonId}/items/${itemId}/benchmark-timings-temp`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ text }),
+        },
+      ),
+  });
+
   return {
     updateLesson,
     createItem,
@@ -163,5 +176,6 @@ export const useLessonMutations = () => {
     uploadLessonAudio,
     deleteLessonAudio,
     generateLessonItemTimings,
+    benchmarkLessonItemTimingsTemp,
   };
 };
