@@ -56,7 +56,10 @@ export interface GeneratedLessonTimings {
   transcriptText: string;
 }
 
-export type TimingTranscriptionProvider = 'openai-whisper' | 'dashscope-qwen-filetrans';
+export type TimingTranscriptionProvider =
+  | 'openai-whisper'
+  | 'dashscope-qwen-asr-flash'
+  | 'dashscope-qwen-filetrans';
 
 export interface TimingBenchmarkProviderSummary {
   transcriptPreview: string;

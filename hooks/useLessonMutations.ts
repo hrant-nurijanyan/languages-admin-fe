@@ -42,7 +42,12 @@ type DeleteItemInput = { lessonId: string; itemId: string };
 type DeleteLessonInput = { lessonId: string };
 type UploadLessonAudioInput = { file: File; lessonItemId?: string };
 type DeleteLessonAudioInput = { lessonItemId?: string; audioUrl: string };
-type GenerateLessonItemTimingsInput = { lessonId: string; itemId: string; text: string };
+type GenerateLessonItemTimingsInput = {
+  lessonId: string;
+  itemId: string;
+  text: string;
+  provider: 'openai-whisper' | 'dashscope-qwen-asr-flash';
+};
 type BenchmarkLessonItemTimingsTempInput = { lessonId: string; itemId: string; text: string };
 type UpdateLessonSegmentTimingsInput = {
   lessonId: string;
@@ -146,12 +151,12 @@ export const useLessonMutations = () => {
   });
 
   const generateLessonItemTimings = useMutation({
-    mutationFn: ({ lessonId, itemId, text }: GenerateLessonItemTimingsInput) =>
+    mutationFn: ({ lessonId, itemId, text, provider }: GenerateLessonItemTimingsInput) =>
       request<{ timings: GeneratedLessonTimings }>(
         `/lessons/${lessonId}/items/${itemId}/transcribe-timings`,
         {
           method: 'POST',
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text, provider }),
         },
       ),
   });
