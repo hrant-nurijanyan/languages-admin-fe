@@ -825,7 +825,7 @@ export default function LessonDetailPage() {
 
   const handleGenerateTimings = async (
     item: EditableItem,
-    provider: 'openai-whisper' | 'dashscope-qwen-asr-flash',
+    provider: 'openai-whisper' | 'dashscope-qwen-filetrans',
   ) => {
     if (!lessonId || !item.id) return;
     setGeneratingTimingsItemLocalId(item.localId);
@@ -847,7 +847,7 @@ export default function LessonDetailPage() {
       const warningSuffix = response.timings.warnings.length
         ? ` with ${response.timings.warnings.length} warning(s)`
         : '';
-      const providerLabel = provider === 'openai-whisper' ? 'GPT (Whisper)' : 'Qwen';
+      const providerLabel = provider === 'openai-whisper' ? 'GPT (Whisper)' : 'Qwen FileTrans';
       setItemsFeedback(`${providerLabel} timings generated${warningSuffix}. Review and save items.`);
       notify(`${providerLabel} timings generated${warningSuffix}`);
     } catch (err) {
@@ -1194,15 +1194,15 @@ export default function LessonDetailPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    void handleGenerateTimings(item, 'dashscope-qwen-asr-flash');
+                    void handleGenerateTimings(item, 'dashscope-qwen-filetrans');
                   }}
                   disabled={
                     !item.audioUrl ||
-                    !item.id ||
+                    item.text.trim().length < 1 ||
                     generateLessonItemTimings.isPending ||
                     generatingTimingsItemLocalId === item.localId
                   }
-                  className="rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-700 transition hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-md border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-700 transition hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {generatingTimingsItemLocalId === item.localId
                     ? 'Generating…'

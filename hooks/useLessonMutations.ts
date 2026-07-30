@@ -46,7 +46,7 @@ type GenerateLessonItemTimingsInput = {
   lessonId: string;
   itemId: string;
   text: string;
-  provider: 'openai-whisper' | 'dashscope-qwen-asr-flash';
+  provider: 'openai-whisper' | 'dashscope-qwen-filetrans';
 };
 type BenchmarkLessonItemTimingsTempInput = { lessonId: string; itemId: string; text: string };
 type UpdateLessonSegmentTimingsInput = {
