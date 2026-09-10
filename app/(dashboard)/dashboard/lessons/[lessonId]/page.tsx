@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useLesson } from '../../../../../hooks/useLesson';
+import { TextAuthoringPanel } from '../../../../../components/lesson-text/TextAuthoringPanel';
 import { useLessonMutations } from '../../../../../hooks/useLessonMutations';
 import { useLessonVocabularyMutations } from '../../../../../hooks/useLessonVocabularyMutations';
 import { useToast } from '../../../../../components/providers/ToastProvider';
@@ -220,6 +221,12 @@ export default function LessonDetailPage() {
   const sortedItems = useMemo(
     () => [...items].sort((left, right) => left.order - right.order),
     [items],
+  );
+  // Only a persisted item (present in the last server-loaded lesson) has a
+  // stable id the new text-authoring workspace can be anchored to.
+  const persistedItemIds = useMemo(
+    () => new Set((lesson?.items ?? []).map((item) => item.id)),
+    [lesson?.items],
   );
   const lessonVocabulary = useMemo(
     () => lesson?.vocabulary ?? lesson?.dictionary ?? [],
@@ -1166,6 +1173,14 @@ export default function LessonDetailPage() {
                 </>
               )}
             </div>
+
+            {persistedItemIds.has(item.id) ? (
+              <TextAuthoringPanel lessonId={lessonId} textId={item.id} />
+            ) : (
+              <p className="text-xs text-slate-500">
+                Save this item once before the new text-authoring workspace becomes available.
+              </p>
+            )}
 
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
